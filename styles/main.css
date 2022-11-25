@@ -78,6 +78,16 @@ html {
     translate: -50% -50%;
     position: absolute;
     box-shadow: var(--marker_shadow);
+    animation: marker_fade_down 200ms linear 1 forwards;
+}
+
+@keyframes marker_fade_down {
+    0% {
+        width: 1.5em;
+    }
+    100% {
+        width: 1em;
+    }
 }
 
 .mid_section_marker {
@@ -87,7 +97,7 @@ html {
 @keyframes mid_section_marker_fade {
     0% {
         opacity: 1;
-    }   
+    }
     100% {
         opacity: 0;
     } 
