@@ -1,16 +1,219 @@
 * {
     margin: 0;
     padding: 0;
-    background-color: #555;
     font-family: Calibri;
     color: #fff;
 }
 
-:root {
+@font-face {
+    font-family: GothamNarrow;
+    src: url(../production/fonts/GothamNarrow-Black.otf);
+}
 
+:root {
+    --bg_color: rgba(25, 25, 25, 1);
+    --colors_hue: 0;
+    --colors_saturation: 75%;
+    --colors_luminosity: 50%;
+
+
+    --outer_target_color: hsla(var(--colors_hue), var(--colors_saturation), var(--colors_luminosity), 1);
+    --marker_shadow: 0 0 5px  hsla(var(--colors_hue), var(--colors_saturation), calc(var(--colors_luminosity) * 10), 1) inset,
+                     0 0 10px  hsla(var(--colors_hue), var(--colors_saturation), calc(var(--colors_luminosity) * 10), 1) inset,
+                     0 0 3px  var(--outer_target_color);
+    --outer_target_shadow:  0 0 5px  var(--outer_target_color) inset,
+                            0 0 15px hsla(0, 0%, 0%, 1)        inset,
+                            0 0 25px hsla(0, 0%, 0%, 0.75)     inset,
+                            0 0 3px  var(--outer_target_color);
+    --inner_target_gradient: radial-gradient(
+        rgba(50, 50, 50, 0.5),
+        rgba(50, 50, 50, 0.5),
+        var(--outer_target_color),
+        var(--outer_target_color)
+    );
+}
+
+html {
+    background-color: var(--bg_color);
 }
 
 .container {
     width: 100%;
     min-height: 100vh;
+    /* border: 0.2rem solid hsla(var(--colors_hue), var(--colors_saturation), clamp(50%, var(--colors_luminosity), 100%), 1); */
+    box-sizing: border-box;
+    box-shadow: 0 0 10px hsla(var(--colors_hue), var(--colors_saturation), clamp(60%, calc(var(--colors_luminosity) + 40%), 100% ), 1)    inset,
+                0 0 20px hsla(var(--colors_hue), var(--colors_saturation), clamp(50%, calc(var(--colors_luminosity) + 30%), 100% ), 0.75) inset,
+                0 0 30px hsla(var(--colors_hue), var(--colors_saturation), clamp(40%, calc(var(--colors_luminosity) + 20%), 100% ), 0.5)  inset;
+
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s linear;
+}
+
+.points {
+    position: absolute;
+    left: 50%;
+    top: 1%;
+    font-size: 2em;
+    translate: -50%;
+    pointer-events: none;
+    user-select: none;
+    font-weight: 900;
+    text-shadow: 0 0 5px hsla(var(--colors_hue), var(--colors_saturation), var(--colors_luminosity));
+    color: hsla(var(--colors_hue), var(--colors_saturation), clamp(70%, var(--colors_luminosity), 100%));
+}
+
+.points > * {
+    display: inline;
+    color: inherit;
+}
+
+.nex_pos_marker {
+    aspect-ratio: 1 / 1;
+    width: 1rem;
+    background-color: var(--outer_target_color);
+    border-radius: 50%;
+    translate: -50% -50%;
+    position: absolute;
+    box-shadow: var(--marker_shadow);
+}
+
+.outer_target {
+    width: 5rem;
+    aspect-ratio: 1 / 1;
+    background-color: var(--outer_target_color);
+    border-radius: 50%;
+    translate: -50% -50%;
+    position: absolute;
+    box-shadow: var(--outer_target_shadow);
+    transition: top 0.2s linear,
+                left 0.2s linear,
+                box-shadow 0.2s linear,
+                background_color 0.2s linear;
+}
+
+.mid_target {
+    width: 75%;
+}
+
+.inner_target {
+    width: 50%;
+    background: var(--inner_target_gradient); 
+}
+
+.mid_target, .inner_target {
+    background-color: transparent;
+    border-radius: 50%;
+    aspect-ratio: 1 / 1;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    translate: -50% -50%;
+}
+
+.point_label {
+    font-size: 2.3em;
+    position: absolute;
+    pointer-events: none;
+    user-select: none;
+    color: hsla(var(--colors_hue), var(--colors_saturation), clamp(70%, var(--colors_luminosity), 100%));
+    font-family: GothamNarrow;
+    -webkit-text-stroke: 3px hsla(0, 0, 90%, 1);
+}
+
+.autoclicker {
+    position: absolute;
+    translate: -50% -50%;
+    bottom: 3rem;
+    z-index: 1;
+    left: 50%;
+    display: flex;
+    justify-content: center;
+}
+
+.slider_container {
+    aspect-ratio: 10 / 1;
+    height: 2rem;
+    position: absolute;
+    box-sizing: border-box;
+    background-color: transparent;
+    border: 0.5rem solid white;
+    border-radius: 1000px;
+    pointer-events: all;
+}
+
+.slider_handle {
+    height: 250%;
+    border-top: 0.25rem solid white;
+    border-left: 0.25rem solid white;
+    border-right: 0.25rem solid white;
+    border-top-left-radius: 1000px;
+    border-top-right-radius: 1000px;
+    width: 1rem;
+    background-color: grey;
+    position: absolute;
+    bottom: 0;
+    box-sizing: border-box;
+    translate: -100% 0;
+    pointer-events: all;
+    left: 5%;
+}
+
+.slider_name_label {
+    position: absolute;
+    top: 0;
+    display: block;
+    width: max-content;
+    left: -55%;
+    /* background-color: blueviolet; */
+    transform: translateY(-30%);
+    font-size: 1.5em;
+    pointer-events: none;
+    user-select: none;
+}
+
+
+.slider_value_label {
+    position: absolute;
+    top: 0;
+    display: block;
+    width: max-content;
+    left: 105%;
+    transform: translateY(-30%);
+    font-size: 1.5em;
+    user-select: none;
+    pointer-events: none;
+}
+
+.autoclick_container {
+    width: 100%;
+    z-index: -11;
+}
+
+.toggle_btn_wrapper {
+    border-radius: 1000px;
+    height: 2rem;
+    aspect-ratio: 2 / 1;
+    position: absolute;
+    box-sizing: border-box;
+    background-color: transparent;
+    border: 0.5rem solid white;
+    pointer-events: all;
+    position: absolute;
+}
+
+.toggle_btn_btn {
+    width: 50%;
+    border-radius: inherit;
+    background-color: gray;
+    height: 100%;
+    position: absolute;
+    transition: left 0.2s linear;
+}
+
+.toggle_button_container {
+    position: absolute;
+    bottom: 5%;
+    right: 14%;
 }
