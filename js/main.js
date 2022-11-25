@@ -57,12 +57,93 @@ const random_pos = () => {
     let containerX = container.clientWidth,
         containerY = container.clientHeight,
         target_size = outer_target.clientWidth,
+        startX = parseInt(outer_target.style.left),
+        startY = parseInt(outer_target.style.top),
         nextXPos = random_min_max_int(0 + target_size/2, containerX - target_size/2),
-        nextYPos = random_min_max_int(0 + target_size/2, containerY - target_size/2)
+        nextYPos = random_min_max_int(0 + target_size/2, containerY - target_size/2),
+        distance_change,
+        directionX,
+        directionY,
+        XDif = startX - nextXPos,
+        YDif = startY - nextYPos,
+        a_pyth = XDif,
+        b_pyth = YDif
+
+    // determines x direction
+    if (startX < nextXPos) {
+        directionX = 'right'
+    } else if (startX > nextXPos) {
+        directionX = 'left'
+    } 
+
+    //determines y direction
+    if (startY < nextYPos) {
+        directionY = 'down'
+    } else if (startY > nextYPos) {
+        directionY = 'up'
+    }
+
+    // determines the distance change (c) between the start and end position of the target 
+    // does this differently depending on which direction the marker moves 
+    // this is because the numbers inside the square root end up negative on up-right and down-left directions requiring imaginary numbers and being not real number
+    if (directionX == 'right' && directionY == 'up' || 
+        directionX == 'left' && directionY == 'down'
+    ) {
+        distance_change = Math.sqrt((a_pyth^2 - b_pyth^2))
+    } else
+    if (directionX == 'left' && directionY == 'up' ||
+        directionX == 'right' && directionY == 'down'
+    ) {
+        distance_change = Math.sqrt((a_pyth^2 + b_pyth^2))
+    }
+
     
+    // differentiats the dot count depending on how far the target is moving
+    let dot_count;
+    if (distance_change < 10) {
+        dot_count = 2;    
+    } else if (distance_change < 17) {
+        dot_count = 3;
+    } else if (distance_change < 30) {
+        dot_count = 4;
+    } else if (distance_change > 30) {
+        dot_count = 5;
+    }
+    
+    //removes the mid-point-markers before it makes new ones
+    if (document.querySelector('.mid_section_marker')) {
+        document.querySelectorAll('.mid_section_marker').forEach(marker => {
+            marker.remove()
+        });
+    }
+
+    // places mid-poin-markers evenly between the start and end points on a line
+    // and the amount of dots determined
+    // and removes them after a predetermined amount of time in case the user hasn't made new markers by clicking the target again
+    for (let i = 0; i < dot_count - 1; i++) {
+        setTimeout(() => {
+            let dotX = XDif / dot_count * (i+1) * -1 + startX,
+                dotY = YDif / dot_count * (i+1) * -1 + startY,
+                dot = document.createElement('div')
+                
+            dot.classList.add('mid_section_marker', 'marker')
+            dot.style.left = `${dotX}px`
+            dot.style.top = `${dotY}px`
+            
+            container.appendChild(dot)
+        }, 100);
+        setTimeout(() => {
+            document.querySelectorAll('.mid_section_marker').forEach(marker => {
+                marker.remove()
+            }); 
+        }, 400);
+    }
+        
+    // creates a marker where the next target is moving to
+    // and removes it when the target reaches its location
     if (document.querySelector('nex_pos_marker')) document.querySelector('nex_pos_marker').remove(); 
     let marker = document.createElement('div')
-    marker.classList.add('nex_pos_marker')
+    marker.classList.add('nex_pos_marker', 'marker')
     marker.style.left = `${nextXPos}px`
     marker.style.top = `${nextYPos}px`
     container.appendChild(marker)
@@ -70,6 +151,7 @@ const random_pos = () => {
         marker.remove()
     }, 200);
 
+    //sets the targets location to the next position
     outer_target.style.left = `${nextXPos}px`
     outer_target.style.top = `${nextYPos}px`
 }

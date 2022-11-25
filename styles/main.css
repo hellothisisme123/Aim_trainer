@@ -48,7 +48,7 @@ html {
 
     position: relative;
     overflow: hidden;
-    transition: all 0.3s linear;
+    transition: box-shadow 0.3s linear;
 }
 
 .points {
@@ -69,14 +69,28 @@ html {
     color: inherit;
 }
 
-.nex_pos_marker {
+.marker {
     aspect-ratio: 1 / 1;
+    z-index: -1;
     width: 1rem;
     background-color: var(--outer_target_color);
     border-radius: 50%;
     translate: -50% -50%;
     position: absolute;
     box-shadow: var(--marker_shadow);
+}
+
+.mid_section_marker {
+    animation: mid_section_marker_fade 400ms linear 1 forwards;
+}
+
+@keyframes mid_section_marker_fade {
+    0% {
+        opacity: 1;
+    }   
+    100% {
+        opacity: 0;
+    } 
 }
 
 .outer_target {
