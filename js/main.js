@@ -1,3 +1,7 @@
+const { animate } = anime;
+
+
+
 const outer_target = document.querySelector('.outer_target'),
       mid_target = document.querySelector('.mid_target'),
       inner_target = document.querySelector('.inner_target'),
